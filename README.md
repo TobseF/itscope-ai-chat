@@ -1,4 +1,4 @@
-# Koog Spring-Boot Elven Assistant
+# Koog Spring-Boot ITscope Assistant
 
 [![Java CI with Maven](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/maven.yml)
 [![Node.js CI](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/node.js.yml)

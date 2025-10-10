@@ -1,0 +1,1 @@
+Entschuldigung, ich habe technische Schwierigkeiten, ihre Anfrage zu verarbeiten.

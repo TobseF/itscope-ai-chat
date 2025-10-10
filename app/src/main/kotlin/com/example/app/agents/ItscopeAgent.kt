@@ -42,7 +42,7 @@ import java.nio.file.Path
 import kotlin.io.path.pathString
 
 @Service
-class ElvenAgent(
+class ItscopeAgent(
     private val promptExecutor: MultiLLMPromptExecutor,
     private val spanExporters: List<SpanExporter>,
     private val buildProps: BuildProperties,
@@ -51,21 +51,20 @@ class ElvenAgent(
     private val promptTemplateProvider: PromptTemplateProvider,
     private val strategy: AIAgentGraphStrategy<String, Any>,
 ) {
-    private val logger = LoggerFactory.getLogger(ElvenAgent::class.java)
-    private val kotlinLogger = KotlinLogging.logger(name = "ElvenAgent")
+    private val logger = LoggerFactory.getLogger(ItscopeAgent::class.java)
+    private val kotlinLogger = KotlinLogging.logger(name = "ITscopeAgent")
 
     private val systemErrorResponse =
-        javaClass.getResource("/agents/elven-assistant/system-error.md")!!.readText()
+        javaClass.getResource("/agents/itscope-assistant/system-error.md")!!.readText()
 
     private val moderationErrorResponse =
-        javaClass.getResource("/agents/elven-assistant/moderation-error.md")!!.readText()
+        javaClass.getResource("/agents/itscope-assistant/moderation-error.md")!!.readText()
 
     private val greetings =
         arrayOf(
-            "Ah, well met! Shall I guide your steps through the realms of light?",
-            "Greetings, friend of the woods. May I show you the hidden wonders?",
-            "Hail! Shall the stars themselves illuminate your path today?",
-            "Ah, a bright hello to you, traveler! How may I illuminate your path through elven wonders today?",
+            "Hallo, wie kann ich ihnen behilflich sein?",
+            "Hallo, wie kann ich Ihnen heute weiterhelfen?",
+            "Wie kann ich Ihnen bei der Nutzung von ITscope unterstützen?",
         )
 
     @Value("\${ai.koog.agents.tracing}")
@@ -112,6 +111,7 @@ class ElvenAgent(
                                 prompt =
                                     createPrompt(systemPrompt, input, relevantDocuments),
                                 model = OpenAIModels.CostOptimized.GPT4_1Mini,
+                                // model = OpenAIModels.Chat.GPT5,
                                 maxAgentIterations = 100,
                             ),
                         strategy = strategy,

@@ -1,7 +1,7 @@
 package com.example.app.api
 
 import com.example.app.Generators.randomSessionId
-import com.example.app.agents.ElvenAgent
+import com.example.app.agents.ItscopeAgent
 import com.example.app.api.model.Answer
 import com.example.app.api.model.ChatRequest
 import kotlinx.coroutines.flow.toList
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ChatController(
-    val agent: ElvenAgent,
+    val agent: ItscopeAgent,
 ) : ChatApi {
     private val logger = LoggerFactory.getLogger(ChatController::class.java)
 

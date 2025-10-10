@@ -1,0 +1,1 @@
+Entschuldigung, ich habe Schwierigkeiten, ihre Anfrage zu verarbeiten.

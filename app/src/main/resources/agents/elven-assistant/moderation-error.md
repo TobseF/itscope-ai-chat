@@ -1,1 +1,0 @@
-Forgive me, mellon, but your message defies our sacred guidelines.
