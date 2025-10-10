@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @Validated
 @RequestMapping("\${api.base-path:}")
+@CrossOrigin
 interface ChatApi {
     @RequestMapping(
         method = [RequestMethod.POST],

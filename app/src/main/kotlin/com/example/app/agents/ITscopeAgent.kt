@@ -16,8 +16,11 @@ import ai.koog.agents.snapshot.providers.PersistenceStorageProvider
 import ai.koog.prompt.dsl.AttachmentBuilder
 import ai.koog.prompt.dsl.Prompt
 import ai.koog.prompt.dsl.prompt
+import ai.koog.prompt.executor.clients.google.GoogleLLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
 import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
+import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
+import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.message.Attachment
 import ai.koog.prompt.message.AttachmentContent
 import ai.koog.prompt.params.LLMParams
@@ -44,13 +47,12 @@ import kotlin.io.path.pathString
 
 @Service
 class ITscopeAgent(
-    private val promptExecutor: MultiLLMPromptExecutor,
+    private val promptExecutor: SingleLLMPromptExecutor,
     private val spanExporters: List<SpanExporter>,
     private val buildProps: BuildProperties,
     private val rankedDocumentStorage: RankedDocumentStorage<Path>,
     private val persistenceStorageProvider: PersistenceStorageProvider,
     private val promptTemplateProvider: PromptTemplateProvider,
-    private val strategy: AIAgentGraphStrategy<String, Any>,
     private val itscopeAPI: ApiAccess,
 ) {
     private val logger = LoggerFactory.getLogger(ITscopeAgent::class.java)
@@ -88,7 +90,7 @@ class ITscopeAgent(
         }
 
         return callbackFlow {
-            var agent: AIAgent<String, Any>? = null
+            var agent: AIAgent<String, String>? = null
             var flowClosed = false
 
             try {
@@ -116,7 +118,6 @@ class ITscopeAgent(
                                 // model = OpenAIModels.Chat.GPT5,
                                 maxAgentIterations = 100,
                             ),
-                        strategy = strategy,
                         toolRegistry = tools, // TODO: Get tools working
                     ) {
                         install(Persistence) {
@@ -129,6 +130,7 @@ class ITscopeAgent(
                             this.rollbackStrategy = RollbackStrategy.MessageHistoryOnly
                         }
 
+                        /*
                         install(OpenTelemetry) {
                             setServiceInfo(serviceName = buildProps.name, serviceVersion = buildProps.version)
                             // Configuration options here
@@ -136,7 +138,7 @@ class ITscopeAgent(
                             spanExporters.forEach {
                                 addSpanExporter(it)
                             }
-                        }
+                        }*/
 
                         if (enableTracing) {
                             install(Tracing) {

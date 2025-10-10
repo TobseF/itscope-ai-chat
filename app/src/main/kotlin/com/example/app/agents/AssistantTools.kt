@@ -33,7 +33,10 @@ class AssistantTools(
         "Sucht ein Produkt auf der ITscope Platform anhand seiner ITscope-ID. " +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
     )
-    fun getProductByItscopeId(id: Long): ProductAnswer? =
+    fun getProductByItscopeId(
+        @LLMDescription("ITscope ID")
+        id: Long,
+    ): ProductAnswer? =
         productsApi
             .queryProductById(
                 id.toString(),
@@ -45,14 +48,20 @@ class AssistantTools(
         "Sucht ein Produkt auf der ITscope über Freitext. " +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
     )
-    fun getProductByItscopeId(term: String): ProductAnswer? =
+    fun getProductByItscopeId(
+        @LLMDescription("Freitext Suchbegriffe")
+        term: String,
+    ): ProductAnswer? =
         productsApi.queryProducts(term, TypeQueryProducts.json, ViewQueryProducts.standard).getProductAnswer()
 
     @LLMDescription(
         "Sucht ein Produkt auf der ITscope anhand seiner EAN." +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
     )
-    fun getProductByItscopeEAN(ean: String): ProductAnswer? =
+    fun getProductByItscopeEAN(
+        @LLMDescription("Produkt EAN")
+        ean: String,
+    ): ProductAnswer? =
         productsApi
             .queryProductByEan(ean, TypeQueryProductByEan.json, ViewQueryProductByEan.standard)
             .getProductAnswer()
