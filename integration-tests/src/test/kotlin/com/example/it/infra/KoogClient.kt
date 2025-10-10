@@ -1,6 +1,6 @@
 package com.example.it
 
-import com.example.it.client.model.Answer
+import com.example.app.api.model.Answer
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.ktor.client.HttpClient

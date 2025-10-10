@@ -1,7 +1,7 @@
 package com.example.it
 
-import com.example.it.client.model.Answer
-import com.example.it.client.model.ChatRequest
+import com.example.app.api.model.Answer
+import com.example.app.api.model.ChatRequest
 import com.example.it.infra.ChatSession
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient

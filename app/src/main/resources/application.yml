@@ -1,7 +1,7 @@
 ai:
   koog:
     agents:
-      tracing: false
+      tracing: true
     chat-memory:
       session-store:
         path: "./target/tmp/session-store"
@@ -42,3 +42,12 @@ spring:
   config:
     import:
       - "classpath:/META-INF/build-info.properties"
+
+de:
+  itscope:
+    api:
+      url: "https://api.itscope.com/2.1"
+      key: ${"OPENAI_API_KEY"}
+      useragent: ITscope MCP Client
+      account:
+        id: m000000

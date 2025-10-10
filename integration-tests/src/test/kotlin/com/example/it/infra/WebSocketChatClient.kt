@@ -1,7 +1,7 @@
 package com.example.it.infra
 
-import com.example.it.client.model.Answer
-import com.example.it.client.model.ChatRequest
+import com.example.app.api.model.Answer
+import com.example.app.api.model.ChatRequest
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow

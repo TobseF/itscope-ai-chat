@@ -1,7 +1,7 @@
 package com.example.app.api
 
 import com.example.app.Generators.randomSessionId
-import com.example.app.agents.ItscopeAgent
+import com.example.app.agents.ITscopeAgent
 import com.example.app.api.model.Answer
 import com.example.app.api.model.ChatRequest
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 @Component
 class ChatWebSocketHandler(
-    private val agent: ItscopeAgent,
+    private val agent: ITscopeAgent,
     private val objectMapper: ObjectMapper,
 ) : WebSocketHandler {
     private val logger = LoggerFactory.getLogger(ChatWebSocketHandler::class.java)

@@ -26,6 +26,7 @@ import ai.koog.rag.base.RankedDocumentStorage
 import ai.koog.rag.base.mostRelevantDocuments
 import com.example.app.ChatSessionId
 import com.example.app.koog.propmts.PromptTemplateProvider
+import de.itscope.ai.mcp.config.ApiAccess
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.opentelemetry.sdk.trace.export.SpanExporter
 import kotlinx.coroutines.channels.awaitClose
@@ -42,7 +43,7 @@ import java.nio.file.Path
 import kotlin.io.path.pathString
 
 @Service
-class ItscopeAgent(
+class ITscopeAgent(
     private val promptExecutor: MultiLLMPromptExecutor,
     private val spanExporters: List<SpanExporter>,
     private val buildProps: BuildProperties,
@@ -50,8 +51,9 @@ class ItscopeAgent(
     private val persistenceStorageProvider: PersistenceStorageProvider,
     private val promptTemplateProvider: PromptTemplateProvider,
     private val strategy: AIAgentGraphStrategy<String, Any>,
+    private val itscopeAPI: ApiAccess,
 ) {
-    private val logger = LoggerFactory.getLogger(ItscopeAgent::class.java)
+    private val logger = LoggerFactory.getLogger(ITscopeAgent::class.java)
     private val kotlinLogger = KotlinLogging.logger(name = "ITscopeAgent")
 
     private val systemErrorResponse =
@@ -72,7 +74,7 @@ class ItscopeAgent(
 
     private val tools =
         ToolRegistry {
-            tools(AssistantTools())
+            tools(AssistantTools(itscopeAPI))
         }
 
     fun giveAdvice(
@@ -97,7 +99,7 @@ class ItscopeAgent(
 
                 val systemPrompt =
                     promptTemplateProvider.getPromptTemplate(
-                        group = "elven-assistant",
+                        group = "itscope-assistant",
                         id = "system",
                         version = "latest",
                     )
@@ -115,10 +117,10 @@ class ItscopeAgent(
                                 maxAgentIterations = 100,
                             ),
                         strategy = strategy,
-                        // toolRegistry=tools, // TODO: fix serialization
+                        toolRegistry = tools, // TODO: Get tools working
                     ) {
                         install(Persistence) {
-                            storage = persistenceStorageProvider
+                            // storage = persistenceStorageProvider
 
                             // Enable automatic checkpoint creation
                             this.enableAutomaticPersistence = true
@@ -183,7 +185,7 @@ class ItscopeAgent(
 
                             onLLMStreamingFrameReceived { context ->
                                 (context.streamFrame as? StreamFrame.Append)?.let { frame ->
-                                    logger.info("➡️ Received: \"${frame.text}\"")
+                                    logger.debug("➡️ Received: \"${frame.text}\"")
                                     if (!flowClosed) {
                                         trySend(frame.text)
                                     }
@@ -245,9 +247,9 @@ class ItscopeAgent(
         ) {
             system(systemPrompt)
             user {
-                +"User's input: ```$input```."
+                +"Nutzer Input: ```$input```."
                 if (relevantDocuments.isNotEmpty()) {
-                    +"Use attachment as relevant context"
+                    +"Use attachment as additional relevant context, but first use the tools"
                     attachments {
                         relevantDocuments.forEach {
                             createAttachmentFromFile(path = it)

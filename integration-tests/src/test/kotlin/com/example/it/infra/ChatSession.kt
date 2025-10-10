@@ -1,6 +1,6 @@
 package com.example.it.infra
 
-import com.example.it.client.model.Answer
+import com.example.app.api.model.Answer
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

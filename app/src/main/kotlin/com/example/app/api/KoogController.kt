@@ -1,6 +1,7 @@
 package com.example.app.api
 
 import ai.koog.agents.core.agent.entity.AIAgentGraphStrategy
+import api.KoogApi
 import com.example.app.koog.strategy.createMermaidDiagram
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
