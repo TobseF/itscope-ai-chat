@@ -22,7 +22,7 @@ class RagConfiguration(
 ) {
     @Bean
     fun embedder(embeddingProvider: LLMEmbeddingProvider): LLMEmbedder =
-        LLMEmbedder(embeddingProvider, OpenAIModels.Embeddings.TextEmbedding3Small)
+        LLMEmbedder(embeddingProvider, OpenAIModels.Embeddings.TextEmbedding3Large)
 
     @Bean
     fun vectorStorage(): VectorStorage<Path> = JVMFileVectorStorage(embeddingStorePath)
@@ -41,5 +41,6 @@ class RagConfiguration(
         RagStorageInitializer(
             storage = storage,
             knowledgeBasePath = knowledgeBasePath,
+            embeddingStorePath = embeddingStorePath,
         )
 }
