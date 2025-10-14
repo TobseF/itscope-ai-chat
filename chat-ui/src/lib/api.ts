@@ -1,12 +1,16 @@
-// API service for connecting to Spring Boot backend at 127.0.0.1:8080
+// API service for connecting to backend via same-origin (Vite proxy in dev)
 
-const API_BASE_URL = 'http://127.0.0.1:8080';
-const WS_BASE_URL = 'ws://127.0.0.1:8080';
+const API_BASE_URL = '';
+const WS_BASE_URL = '';
+
+// Timeout for HTTP chat requests (e.g., long LLM generations)
+const POST_CHAT_TIMEOUT_MS = 120_000; // 120 seconds
 
 export interface ChatRequest {
     message: string;
     chatSessionId: string | undefined;
     chatRequestId: string;
+    streaming: boolean;
 }
 
 export interface Answer {
@@ -61,6 +65,59 @@ export async function getStrategyGraph(): Promise<string> {
             throw error;
         }
         throw new ApiError(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+export async function postChat(message: string, chatSessionId?: string): Promise<Answer> {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => {
+        controller.abort('postChat timeout');
+    }, POST_CHAT_TIMEOUT_MS);
+
+    try {
+        const chatRequestId = generateRequestId();
+        const streaming = false;
+        const body: ChatRequest = {
+            message,
+            chatSessionId,
+            chatRequestId,
+            streaming
+        };
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+        if (chatSessionId) {
+            headers['X-Session-ID'] = chatSessionId;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/chat`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(body),
+            signal: controller.signal,
+            // keepalive can help with page unloads; safe to include
+            keepalive: true
+        });
+
+        if (!response.ok) {
+            const text = await response.text().catch(() => '');
+            throw new ApiError(`Failed to post chat: ${response.status} ${response.statusText}${text ? ` - ${text}` : ''}`, response.status);
+        }
+
+        const answer: Answer = await response.json();
+        return answer;
+    } catch (error) {
+        if (error instanceof ApiError) {
+            throw error;
+        }
+        if ((error as any)?.name === 'AbortError') {
+            throw new ApiError(`Request timed out after ${POST_CHAT_TIMEOUT_MS / 1000}s`);
+        }
+        throw new ApiError(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+        clearTimeout(timeoutId);
     }
 }
 

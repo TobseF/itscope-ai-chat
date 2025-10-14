@@ -17,6 +17,7 @@ import ai.koog.prompt.dsl.AttachmentBuilder
 import ai.koog.prompt.dsl.Prompt
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.clients.google.GoogleLLMClient
+import ai.koog.prompt.executor.clients.google.GoogleModels
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
 import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.info.BuildProperties
 import org.springframework.stereotype.Service
@@ -92,6 +94,7 @@ class ITscopeAgent(
         return callbackFlow {
             var agent: AIAgent<String, String>? = null
             var flowClosed = false
+            var hasEmitted = false
 
             try {
                 val relevantDocuments =
@@ -114,14 +117,15 @@ class ITscopeAgent(
                             AIAgentConfig(
                                 prompt =
                                     createPrompt(systemPrompt, input, relevantDocuments),
-                                model = OpenAIModels.CostOptimized.GPT4_1Mini,
-                                // model = OpenAIModels.Chat.GPT5,
+                                // model = OpenAIModels.CostOptimized.GPT4_1Mini,
+                                // model = OpenAIModels.Chat.GPT5Mini,
+                                model = OpenAIModels.Chat.GPT5,
                                 maxAgentIterations = 100,
                             ),
                         toolRegistry = tools, // TODO: Get tools working
                     ) {
                         install(Persistence) {
-                            // storage = persistenceStorageProvider
+                            storage = persistenceStorageProvider
 
                             // Enable automatic checkpoint creation
                             this.enableAutomaticPersistence = true
@@ -156,6 +160,7 @@ class ITscopeAgent(
                                 logger.warn("❌ Tool validation failed. tool=${it.tool} error=${it.error}")
                                 if (!flowClosed) {
                                     flowClosed = true
+                                    hasEmitted = true
                                     trySend(systemErrorResponse)
                                     close()
                                 }
@@ -169,6 +174,7 @@ class ITscopeAgent(
                                     if (it.moderationResult.isHarmful) {
                                         if (!flowClosed) {
                                             flowClosed = true
+                                            hasEmitted = true
                                             trySend(moderationErrorResponse)
                                             close()
                                         }
@@ -180,6 +186,7 @@ class ITscopeAgent(
                                 logger.warn("❌ Node execution failed: ${it.node}", it.throwable)
                                 if (!flowClosed) {
                                     flowClosed = true
+                                    hasEmitted = true
                                     trySend(systemErrorResponse)
                                     close()
                                 }
@@ -189,6 +196,9 @@ class ITscopeAgent(
                                 (context.streamFrame as? StreamFrame.Append)?.let { frame ->
                                     logger.debug("➡️ Received: \"${frame.text}\"")
                                     if (!flowClosed) {
+                                        if (frame.text.isNotEmpty()) {
+                                            hasEmitted = true
+                                        }
                                         trySend(frame.text)
                                     }
                                 }
@@ -198,6 +208,7 @@ class ITscopeAgent(
                                 logger.warn("❌ Error: ${it.error}")
                                 if (!flowClosed) {
                                     flowClosed = true
+                                    hasEmitted = true
                                     trySend(systemErrorResponse)
                                     close()
                                 }
@@ -215,11 +226,25 @@ class ITscopeAgent(
 
                 logger.trace("Running command: {}", input)
 
-                agent.run(input)
+                val result = agent.run(input)
+                // If no streaming frames were emitted but we have a final result, emit it now
+                if (!flowClosed && !hasEmitted) {
+                    val finalText = result?.toString()?.trim().orEmpty()
+                    if (finalText.isNotEmpty()) {
+                        hasEmitted = true
+                        trySend(finalText)
+                    }
+                }
+                // Ensure the flow terminates when the agent run completes (even if no streaming callbacks fired)
+                if (!flowClosed) {
+                    flowClosed = true
+                    close()
+                }
             } catch (e: Exception) {
                 logger.error("❌ Error processing request", e)
                 if (!flowClosed) {
                     flowClosed = true
+                    hasEmitted = true
                     trySend(systemErrorResponse)
                     close()
                 }
@@ -245,7 +270,7 @@ class ITscopeAgent(
     ): Prompt =
         prompt(
             "with-context",
-            params = LLMParams(temperature = 0.2),
+            params = LLMParams(temperature = 1.0),
         ) {
             system(systemPrompt)
             user {

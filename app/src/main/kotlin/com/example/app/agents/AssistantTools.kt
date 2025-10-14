@@ -24,11 +24,11 @@ class AssistantTools(
 ) : ToolSet {
     val productsApi = itscopeAPI.getProductsApi()
 
-    @Tool
+    @Tool("get_best_notebook")
     @LLMDescription("Gibt das beliebteste Notebook auf ITscope zurück")
     fun getBestNotebook(): String = "Dell Pro 16 PC16250 - Intel Core 5 (ITscope-iD: 20764936000)"
 
-    @Tool
+    @Tool("get_product_by_itscope_id")
     @LLMDescription(
         "Sucht ein Produkt auf der ITscope Platform anhand seiner ITscope-ID. " +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
@@ -44,18 +44,20 @@ class AssistantTools(
                 ViewQueryProductById.standard,
             ).getProductAnswer()
 
+    @Tool("search_product")
     @LLMDescription(
-        "Sucht ein Produkt auf der ITscope über Freitext. " +
+        "Sucht ein Produkt auf ITscope über Freitext. " +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
     )
-    fun getProductByItscopeId(
+    fun searchProduct(
         @LLMDescription("Freitext Suchbegriffe")
         term: String,
     ): ProductAnswer? =
         productsApi.queryProducts(term, TypeQueryProducts.json, ViewQueryProducts.standard).getProductAnswer()
 
+    @Tool("search_product_by_ean")
     @LLMDescription(
-        "Sucht ein Produkt auf der ITscope anhand seiner EAN." +
+        "Sucht ein Produkt auf ITscope anhand seiner EAN." +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
     )
     fun getProductByItscopeEAN(

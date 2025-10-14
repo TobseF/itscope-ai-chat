@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
-@RequestMapping("\${api.base-path:}")
-@CrossOrigin
+@RequestMapping()
 interface ChatApi {
     @RequestMapping(
         method = [RequestMethod.POST],
@@ -26,8 +25,7 @@ interface ChatApi {
     )
     suspend fun chat(
         @Valid @RequestBody chatRequest: ChatRequest,
-        @Pattern(regexp = "^[_0-9a-f-]{16,64}$") @RequestHeader(value = "X-Session-ID", required = false) xSessionID:
-            String?,
+        @RequestHeader(value = "X-Session-ID", required = false) xSessionID: String?,
     ): ResponseEntity<Answer>
 
     @RequestMapping(

@@ -24,7 +24,7 @@ class AgentConfiguration {
                 name = "moderate-input",
                 moderatingModel = OpenAIModels.Moderation.Omni,
             )
-            val executeMultipleTools by nodeExecuteMultipleTools(parallelTools = true)
+            val executeMultipleTools by nodeExecuteMultipleTools(parallelTools = false)
             val nodeStreaming by nodeLLMRequestStreamingAndSendResults()
 
             val mapStringToRequests by node<String, List<Message.Request>> { input ->

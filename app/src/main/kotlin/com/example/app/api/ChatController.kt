@@ -37,16 +37,19 @@ class ChatController(
         val headers = HttpHeaders()
         headers.set(X_SESSION_ID_HEADER, sessionId)
 
+        val body =
+            Answer(
+                message = reply,
+                chatSessionId = sessionId,
+                completed = true,
+                chatRequestId = chatRequest.chatRequestId,
+            )
+        logger.info("Answering chat request: {}", body)
         return ResponseEntity
             .ok()
             .headers(headers)
             .body(
-                Answer(
-                    message = reply,
-                    chatSessionId = sessionId,
-                    completed = true,
-                    chatRequestId = chatRequest.chatRequestId,
-                ),
+                body,
             )
     }
 }

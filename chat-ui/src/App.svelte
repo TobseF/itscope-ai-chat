@@ -1,7 +1,7 @@
 <script lang="ts">
     import {afterUpdate, onDestroy, onMount} from 'svelte';
     import {ChevronDown, HelpCircle, Loader2} from 'lucide-svelte';
-    import {ApiError, getApiVersion, getStrategyGraph, WebSocketChatClient} from './lib/api';
+    import {ApiError, getApiVersion, getStrategyGraph, WebSocketChatClient, postChat} from './lib/api';
     import {sessionId} from './lib/session';
     import {marked} from 'marked';
     import DiagramViewer from './components/DiagramViewer.svelte';
@@ -286,14 +286,34 @@
         currentMessage = '';
         isLoading = true;
 
-        // Block UI for 30 seconds or until response
+        // Block UI for up to 120 seconds or until response
         const timeout = setTimeout(() => {
             isLoading = false;
-        }, 30000);
+        }, 120000);
+
+        const webSocketSupport = false;
 
         try {
-            const response = await wsClient.sendMessage(messageText, (answer) => {
-                // Update the message with each streaming response
+            if (webSocketSupport && wsClient && wsClient.isConnected()) {
+                console.log('Sending message to WebSocket');
+                const response = await wsClient.sendMessage(messageText, (answer) => {
+                    // Update the message with each streaming response
+                    messages = messages.map(msg =>
+                        msg.id === loadingMessageId
+                            ? {
+                                ...msg,
+                                text: answer.message,
+                                timestamp: new Date(),
+                                requestId: answer.chatRequestId,
+                                completed: answer.completed
+                            }
+                            : msg
+                    );
+                });
+            } else {
+                console.log('Sending message to HTTP endpoint');
+                // Fallback to HTTP endpoint when WebSocket is not connected
+                const answer = await postChat(messageText, currentSessionId);
                 messages = messages.map(msg =>
                     msg.id === loadingMessageId
                         ? {
@@ -301,14 +321,19 @@
                             text: answer.message,
                             timestamp: new Date(),
                             requestId: answer.chatRequestId,
-                            completed: answer.completed
+                            completed: true
                         }
                         : msg
                 );
-            });
+
+                // Update session ID from server response if provided
+                if (answer.chatSessionId && answer.chatSessionId !== currentSessionId) {
+                    sessionId.update(answer.chatSessionId);
+                    currentSessionId = answer.chatSessionId;
+                }
+            }
 
             clearTimeout(timeout);
-
             isLoading = false;
 
             // Focus input field after receiving response
@@ -517,8 +542,8 @@
     <header class="chat-header">
         <div class="header-content">
             <div class="ai-indicator">
-                <img src="{baseUrl}logo.png" alt="Elven Assistant" class="header-avatar"/>
-                <span>Elven Assistant</span>
+                <img src="{baseUrl}logo.png" alt="ITscope Assistant" class="header-avatar"/>
+                <span>ITscope Assistant</span>
             </div>
             <div class="header-right">
                 <ThemeToggle/>
@@ -692,9 +717,7 @@
     .header-avatar {
         width: var(--size-header-avatar);
         height: var(--size-header-avatar);
-        border-radius: 50%;
-        object-fit: cover;
-        border: 6px solid rgba(255, 255, 255, 0.5);
+        object-fit: fill;
     }
 
     .header-right {

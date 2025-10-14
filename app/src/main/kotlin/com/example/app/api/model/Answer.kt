@@ -12,8 +12,8 @@ import jakarta.validation.constraints.Pattern
  */
 data class Answer(
     @get:JsonProperty("message", required = true) val message: String,
-    @get:Pattern(regexp = "^[_0-9a-f-]{16,64}$")
-    @get:JsonProperty("chatSessionId", required = true) val chatSessionId: String,
+    // @get:Pattern(regexp = "^[_0-9a-f-]{16,64}$")
+    @get:JsonProperty("chatSessionId", required = false) val chatSessionId: String,
     @get:JsonProperty("completed", required = true) val completed: Boolean,
     @get:JsonProperty("chatRequestId") val chatRequestId: String? = null,
 )

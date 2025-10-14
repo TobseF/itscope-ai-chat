@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * WebSocket handler for real-time chat communication with the Elven Assistant.
+ * WebSocket handler for real-time chat communication with the ITscope Assistant.
  *
  * Handles WebSocket connections, processes incoming chat messages, and streams responses back to clients.
  * Manages session lifecycle and supports session migration based on chat session IDs.
