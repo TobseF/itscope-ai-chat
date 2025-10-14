@@ -1,13 +1,18 @@
-# Koog Spring-Boot ITscope Assistant
+# <img src=".idea/icon.svg" width="36"/> ITscope AI Chat
 
-[![Java CI with Maven](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/maven.yml)
-[![Node.js CI](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/kpavlov/koog-spring-boot-assistant/actions/workflows/node.js.yml)
+[![Java-21](https://img.shields.io/badge/Java-21-red.svg?style=flat&logo=Java&logoColor=white)](https://jdk.java.net/21/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-7F52FF.svg?style=flat&logo=Kotlin&logoColor=white)](https://kotlinlang.org/docs/whatsnew17.html)
+[![Spring](https://img.shields.io/badge/Spring-6.2.11-6DB33F.svg?style=flat&logo=SpringBoot&logoColor=white)](https://spring.io/projects/spring-boot)
 
-[**WEB UI**](https://kpavlov.github.io/koog-spring-boot-assistant/)
+> 🖐️ **Disclaimer**  
+> This is a part-time project and not an official ITscope product.  
+> The current state is a work in progress.  
+> Project is forked from [kpavlov/koog-spring-boot-assistant](https://github.com/kpavlov/koog-spring-boot-assistant).
 
-🎞️ Featuring in the ["Testing Challenges in the Age of AI"](https://m.devoxx.com/events/dvbe25/talks/25280/testing-challenges-in-the-age-of-ai) 
-Devoxx Belgium 2025 talk
- - [Slides](https://speakerdeck.com/kpavlov/testing-challenges-in-the-age-of-ai-devoxx-dot-be-2025)
+Provides an AI chatbot for the [ITscope](https://www.itscope.com) platform.
+
+This setup also includes a generated Kotlin client for
+all [ITscope API](https://guide.itscope.com/en/kbtopic/api-documentation/) endpoints.
 
 ## Overview
 
@@ -33,12 +38,6 @@ session persistence, and real-time WebSocket communication.
 <div style="max-height: 80vh; display: inline-flex">
 
 [![screenshot-1.png](docs/screenshot-1.png)](https://kpavlov.github.io/koog-spring-boot-assistant/)
-
-</div>
-
-<div style="max-height: 80vh; display: inline-flex">
-
-[![screenshot-2.png](docs/screenshot-2.png)](https://kpavlov.github.io/koog-spring-boot-assistant/)
 
 </div>
 
