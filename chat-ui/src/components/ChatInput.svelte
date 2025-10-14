@@ -60,8 +60,8 @@
 
 <style>
     .input-container {
-        background: white;
-        border-top: 2px solid #e5e7eb;
+        background: var(--color-input-bg);
+        border-top: 2px solid var(--color-border);
         padding: var(--spacing-input);
     }
 
@@ -85,23 +85,25 @@
 
     .message-input {
         width: 100%;
-        border: 4px solid #e5e7eb;
+        border: 4px solid var(--color-input-border);
         border-radius: 1.5rem;
         padding: var(--spacing-input-padding);
-        font-size: 3rem;
+        font-size: var(--fs-input);
         font-family: inherit;
         resize: none;
         outline: none;
         transition: border-color 0.2s;
-        min-height: 3.5rem;
+        min-height: var(--size-input-min-height);
         max-height: 30vh;
         overflow-y: auto;
-        caret-color: #2563eb;
+        background: var(--color-input-bg);
+        color: var(--color-input-text);
+        caret-color: var(--color-user-bubble);
         caret-width: 4px;
     }
 
     .message-input:focus {
-        border-color: #3b82f6;
+        border-color: var(--color-input-border-focus);
     }
 
     .message-input:disabled {
@@ -112,18 +114,18 @@
 
     @media (prefers-color-scheme: dark) {
         .input-container {
-            background: #1f2937;
-            border-color: #374151;
+            background: var(--color-input-bg);
+            border-color: var(--color-border);
         }
 
         .message-input {
-            background: #374151;
-            color: #f9fafb;
-            border-color: #4b5563;
+            background: var(--color-input-bg);
+            color: var(--color-input-text);
+            border-color: var(--color-input-border);
         }
 
         .message-input:focus {
-            border-color: #3b82f6;
+            border-color: var(--color-input-border-focus);
         }
     }
 

@@ -34,17 +34,18 @@
   --spacing-input-padding: 0.5rem 1.75rem 0.75rem 1.75rem;
 
   /* Light theme colors (default) */
-  --color-primary: #667eea;
-  --color-secondary: #764ba2;
-  --color-accent: #8b5cf6;
-  --color-user-bubble: #2563eb;
+  /* ITscope-inspired palette: deep navy blues + orange accent based on screenshot */
+  --color-primary: #0b2e4a;          /* deep navy */
+  --color-secondary: #0e3a5a;        /* slightly lighter navy */
+  --color-accent: #ff6a00;           /* ITscope orange CTA */
+  --color-user-bubble: #0d5ea8;      /* action blue for user messages */
   --color-ai-bubble-bg: #ffffff;
   --color-ai-bubble-text: #1f2937;
   --color-chat-bg: #f8fafc;
   --color-input-bg: #ffffff;
   --color-input-text: #1a1a1a;
   --color-input-border: #e5e7eb;
-  --color-input-border-focus: #3b82f6;
+  --color-input-border-focus: #0d5ea8; /* focus ring in brand blue */
   --color-border: #e5e7eb;
   --color-text-primary: #1a1a1a;
   --color-text-secondary: #6b7280;
@@ -59,10 +60,10 @@
   --color-status-online: #10b981;
   --color-status-offline: #ef4444;
   --color-toast-bg: #ffffff;
-  --color-toast-border: #8b5cf6;
-  --gradient-body: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-header: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-help-dropdown: #764ba2;
+  --color-toast-border: #0d5ea8;
+  --gradient-body: linear-gradient(135deg, #0b2e4a 0%, #0e3a5a 100%);
+  --gradient-header: linear-gradient(135deg, #0b2e4a 0%, #0e3a5a 100%);
+  --gradient-help-dropdown: #0e3a5a;
 
   /* Base settings */
   color-scheme: light;

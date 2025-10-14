@@ -12,7 +12,7 @@
         {#if message.isUser}
             <User size={24}/>
         {:else}
-            <img src="{baseUrl}elf.png" alt="Elven Assistant" class="avatar-image"/>
+            <img src="{baseUrl}app-icon.png" alt="ITscope Assistant" class="avatar-image"/>
         {/if}
     </div>
     <div class="message-content">
@@ -71,7 +71,6 @@
     }
 
     .ai-message .avatar {
-        background: var(--color-accent, #8b5cf6);
         color: white;
         overflow: hidden;
         margin: 0 1rem 0 0;

@@ -44,8 +44,8 @@
 <header class="chat-header">
     <div class="header-content">
         <div class="ai-indicator">
-            <img src="{baseUrl}logo.png" alt="Elven Assistant" class="header-avatar"/>
-            <span>Elven Assistant</span>
+            <img src="{baseUrl}logo.png" alt="ITscope Assistant" class="header-avatar"/>
+            <span>ITscope Assistant</span>
         </div>
         <div class="header-right">
             <div class="status {!isServerOnline ? 'clickable' : ''}" on:click={onStatusClick}>
@@ -87,7 +87,7 @@
 
 <style>
     .chat-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--gradient-header);
         color: white;
         padding: 1.5rem 2rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -203,7 +203,7 @@
         position: absolute;
         top: calc(100% + 0.5rem);
         right: 0;
-        background: #764ba2;
+        background: var(--gradient-help-dropdown);
         border-radius: 0.5rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         width: max-content;
@@ -253,7 +253,7 @@
 
     @media (prefers-color-scheme: dark) {
         .help-dropdown {
-            background: #4c2e70;
+            background: var(--gradient-help-dropdown);
         }
 
         .help-menu-item:hover {
