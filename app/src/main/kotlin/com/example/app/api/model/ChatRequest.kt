@@ -1,7 +1,7 @@
 package com.example.app.api.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.validation.constraints.Pattern
+import kotlinx.serialization.Serializable
 
 /**
  *
@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern
  * @param chatSessionId Chat Session identifier  for the conversation
  * @param streaming
  */
+@Serializable
 data class ChatRequest(
     @get:JsonProperty("message", required = true) val message: String,
     @get:JsonProperty("chatRequestId") val chatRequestId: String? = null,

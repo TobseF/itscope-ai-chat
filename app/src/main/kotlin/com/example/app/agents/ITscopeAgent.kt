@@ -3,12 +3,10 @@ package com.example.app.agents
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.agent.config.AIAgentConfig
 import ai.koog.agents.core.agent.context.RollbackStrategy
-import ai.koog.agents.core.agent.entity.AIAgentGraphStrategy
 import ai.koog.agents.core.dsl.extension.ModeratedMessage
 import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.tools
 import ai.koog.agents.features.eventHandler.feature.handleEvents
-import ai.koog.agents.features.opentelemetry.feature.OpenTelemetry
 import ai.koog.agents.features.tracing.feature.Tracing
 import ai.koog.agents.features.tracing.writer.TraceFeatureMessageLogWriter
 import ai.koog.agents.snapshot.feature.Persistence
@@ -16,12 +14,8 @@ import ai.koog.agents.snapshot.providers.PersistenceStorageProvider
 import ai.koog.prompt.dsl.AttachmentBuilder
 import ai.koog.prompt.dsl.Prompt
 import ai.koog.prompt.dsl.prompt
-import ai.koog.prompt.executor.clients.google.GoogleLLMClient
-import ai.koog.prompt.executor.clients.google.GoogleModels
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
-import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
-import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.message.Attachment
 import ai.koog.prompt.message.AttachmentContent
 import ai.koog.prompt.params.LLMParams
@@ -39,7 +33,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.info.BuildProperties
 import org.springframework.stereotype.Service
@@ -118,14 +111,14 @@ class ITscopeAgent(
                                 prompt =
                                     createPrompt(systemPrompt, input, relevantDocuments),
                                 // model = OpenAIModels.CostOptimized.GPT4_1Mini,
-                                // model = OpenAIModels.Chat.GPT5Mini,
-                                model = OpenAIModels.Chat.GPT5,
+                                model = OpenAIModels.Chat.GPT5Mini,
+                                // model = OpenAIModels.Chat.GPT5,
                                 maxAgentIterations = 100,
                             ),
-                        toolRegistry = tools, // TODO: Get tools working
+                        toolRegistry = tools,
                     ) {
                         install(Persistence) {
-                            storage = persistenceStorageProvider
+                            // storage = persistenceStorageProvider // TODO: Enable storage provider which breaks tool call by not
 
                             // Enable automatic checkpoint creation
                             this.enableAutomaticPersistence = true
@@ -227,9 +220,9 @@ class ITscopeAgent(
                 logger.trace("Running command: {}", input)
 
                 val result = agent.run(input)
-                // If no streaming frames were emitted but we have a final result, emit it now
+                // If no streaming frames were emitted, but we have a final result, emit it now
                 if (!flowClosed && !hasEmitted) {
-                    val finalText = result?.toString()?.trim().orEmpty()
+                    val finalText = result.trim()
                     if (finalText.isNotEmpty()) {
                         hasEmitted = true
                         trySend(finalText)

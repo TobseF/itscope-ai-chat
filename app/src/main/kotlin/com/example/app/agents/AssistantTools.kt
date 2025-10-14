@@ -13,10 +13,7 @@ import de.itscope.api.client.ProductsApi.ViewQueryProductById
 import de.itscope.api.client.ProductsApi.ViewQueryProducts
 import de.itscope.api.dto.Product
 import de.itscope.api.dto.ProductResponse
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import reactor.core.publisher.Mono
-import kotlin.random.Random
 
 @Suppress("unused")
 class AssistantTools(
@@ -24,11 +21,11 @@ class AssistantTools(
 ) : ToolSet {
     val productsApi = itscopeAPI.getProductsApi()
 
-    @Tool("get_best_notebook")
+    @Tool
     @LLMDescription("Gibt das beliebteste Notebook auf ITscope zurück")
     fun getBestNotebook(): String = "Dell Pro 16 PC16250 - Intel Core 5 (ITscope-iD: 20764936000)"
 
-    @Tool("get_product_by_itscope_id")
+    @Tool
     @LLMDescription(
         "Sucht ein Produkt auf der ITscope Platform anhand seiner ITscope-ID. " +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
@@ -44,7 +41,7 @@ class AssistantTools(
                 ViewQueryProductById.standard,
             ).getProductAnswer()
 
-    @Tool("search_product")
+    @Tool
     @LLMDescription(
         "Sucht ein Produkt auf ITscope über Freitext. " +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
@@ -55,12 +52,12 @@ class AssistantTools(
     ): ProductAnswer? =
         productsApi.queryProducts(term, TypeQueryProducts.json, ViewQueryProducts.standard).getProductAnswer()
 
-    @Tool("search_product_by_ean")
+    @Tool
     @LLMDescription(
         "Sucht ein Produkt auf ITscope anhand seiner EAN." +
             "Im Ergebnis sind Produktinformationen und Preis enthalten.",
     )
-    fun getProductByItscopeEAN(
+    fun getProductByProductEAN(
         @LLMDescription("Produkt EAN")
         ean: String,
     ): ProductAnswer? =

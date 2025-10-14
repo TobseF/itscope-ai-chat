@@ -1,7 +1,7 @@
 package com.example.app.api.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.validation.constraints.Pattern
+import kotlinx.serialization.Serializable
 
 /**
  *
@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern
  * @param completed Is response complete
  * @param chatRequestId Chat Request identifier\\
  */
+@Serializable
 data class Answer(
     @get:JsonProperty("message", required = true) val message: String,
     // @get:Pattern(regexp = "^[_0-9a-f-]{16,64}$")
