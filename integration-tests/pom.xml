@@ -100,7 +100,7 @@
                             <inputSpec>${project.basedir}/../docs/openapi.yaml</inputSpec>
                             <generatorName>kotlin</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
-                            <modelPackage>com.example.it.client.model</modelPackage>
+                            <modelPackage>it.client.model</modelPackage>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <generateApis>false</generateApis>
                             <generateModelTests>false</generateModelTests>

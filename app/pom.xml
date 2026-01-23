@@ -126,8 +126,8 @@
                             <inputSpec>${project.basedir}/../docs/openapi.yaml</inputSpec>
                             <generatorName>kotlin-spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
-                            <apiPackage>com.example.app.api</apiPackage>
-                            <modelPackage>com.example.app.api.model</modelPackage>
+                            <apiPackage>app.api</apiPackage>
+                            <modelPackage>app.api.model</modelPackage>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <configOptions>
                                 <documentationProvider>none</documentationProvider>
