@@ -11,6 +11,7 @@ import ai.koog.agents.features.tracing.feature.Tracing
 import ai.koog.agents.features.tracing.writer.TraceFeatureMessageLogWriter
 import ai.koog.agents.snapshot.feature.Persistence
 import ai.koog.agents.snapshot.providers.PersistenceStorageProvider
+import ai.koog.agents.snapshot.providers.filters.AgentCheckpointPredicateFilter
 import ai.koog.prompt.dsl.AttachmentBuilder
 import ai.koog.prompt.dsl.Prompt
 import ai.koog.prompt.dsl.prompt
@@ -46,8 +47,9 @@ class ITscopeAgent(
     private val spanExporters: List<SpanExporter>,
     private val buildProps: BuildProperties,
     private val rankedDocumentStorage: RankedDocumentStorage<Path>,
-    private val persistenceStorageProvider: PersistenceStorageProvider,
+    private val persistenceStorageProvider: PersistenceStorageProvider<AgentCheckpointPredicateFilter>,
     private val promptTemplateProvider: PromptTemplateProvider,
+    private val agentConfiguration: AgentConfiguration,
     private val itscopeAPI: ApiAccess,
 ) {
     private val logger = LoggerFactory.getLogger(ITscopeAgent::class.java)
@@ -88,6 +90,11 @@ class ITscopeAgent(
             var agent: AIAgent<String, String>? = null
             var flowClosed = false
             var hasEmitted = false
+
+            val strategy =
+                agentConfiguration.streamingAgentStrategy {
+                    trySend(it.text)
+                }
 
             try {
                 val relevantDocuments =
